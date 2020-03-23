@@ -1,3 +1,4 @@
+//!
 //! Add serialize_deserialize_u8_i32 dependency in your Cargo.toml file
 //! (please note that we have also added serde and bincode for this usage example)
 //!
@@ -69,7 +70,7 @@
 //!     As PhotonImage again: PhotonImage { raw_pixels: [134, 122, 131, 255, 131, 131, 139, 255, 135, 134, 137, 255, 138, 134, 130, 255, 126, 125, 119, 255, 131, 134, 129, 255, 137, 134, 132, 255, 130, 126, 130, 255, 132, 125, 132, 255, 122, 142, 129, 255, 134, 135, 128, 255, 138, 120, 125, 255, 125, 134, 110, 255, 121, 122, 137, 255, 141, 140, 141, 255, 125, 144, 120, 255], width: 4, height: 4 }
 //!     */
 //!```
-
+//!
 pub mod s_d_u8_i32 {
     use std::convert::TryInto;
 

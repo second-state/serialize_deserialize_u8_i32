@@ -302,7 +302,7 @@ mod tests {
         // [99, 100, 101, 102, 103, 104, 105]
 
         // Expected result
-        // [1099100101, 1102103104, 3000000105]
+        // [1099100101, 1102103104, 0000000105]
         let mut a: Vec<i32> = Vec::new();
         a.push(1099100101);
         a.push(1102103104);
@@ -316,6 +316,54 @@ mod tests {
         assert_eq!(matching, 3);
     }
 
+    #[test]
+    fn test_serialize_u8_to_i32_four() {
+        let mut vec: Vec<u8> = Vec::new();
+        for i in 99..=106 {
+            vec.push(i);
+        }
+        // Creates
+        // [99, 100, 101, 102, 103, 104, 105, 106]
+
+        // Expected result
+        // [1099100101, 1102103104, 2000105106]
+        let mut a: Vec<i32> = Vec::new();
+        a.push(1099100101);
+        a.push(1102103104);
+        a.push(2000105106);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 3);
+    }
+
+
+    #[test]
+    fn test_serialize_u8_to_i32_five() {
+        let mut vec: Vec<u8> = Vec::new();
+        for i in 9..=16 {
+            vec.push(i);
+        }
+        // Creates
+        // [9, 10, 11, 12, 13, 14, 15, 16]
+
+        // Expected result
+        // [1009010011, 1012013014, 2000015016]
+        let mut a: Vec<i32> = Vec::new();
+        a.push(1009010011);
+        a.push(1012013014);
+        a.push(2000015016);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 3);
+    }
     //Actually this test can go out in the documentation because we are only dealing with u8 to i32 here
     // The struct is just one example of how this can be used at the higher level, there will be many more
     /*

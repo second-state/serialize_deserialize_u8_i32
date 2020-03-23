@@ -1,4 +1,4 @@
-mod s_d_u8_i32 {
+pub mod s_d_u8_i32 {
     use std::convert::TryInto;
 
     pub fn exceeding_max_i32_threshold(_num: u64) -> bool {

@@ -41,9 +41,7 @@ pub mod s_d_u8_i32 {
     }
 
     pub fn access_value(_value: u64, _position: u64, _size: u64) -> u64 {
-        let _mode: u64 = (_value % (10_u64.pow(_position.try_into().unwrap())))
-            - (_value % (10_u64.pow((_position - _size).try_into().unwrap())))
-                / (10_u64.pow((_position - _size).try_into().unwrap()));
+        let _mode: u64 = ((_value % (10_u64.pow(_position.try_into().unwrap()))) - (_value % (10_u64.pow((_position - _size).try_into().unwrap())))) / (10_u64.pow((_position - _size).try_into().unwrap()));
         _mode
     }
 
@@ -242,10 +240,10 @@ mod tests {
         assert_eq!(v, 1000000000);
     }
     #[test]
-    fn test_access_3_3_000() {
-        let _test_single_value_for_i32_vec_000: u64 = 1000000000;
-        let v = s_d_u8_i32::access_value(_test_single_value_for_i32_vec_000, 3, 3);
-        assert_eq!(v, 000);
+    fn test_access_3_3_1() {
+        let _test_single_value_for_i32_vec_000: u64 = 1009010011;
+        let v = s_d_u8_i32::access_value(_test_single_value_for_i32_vec_000, 10, 1);
+        assert_eq!(v, 1);
     }
     #[test]
     fn test_access_3_3_123() {

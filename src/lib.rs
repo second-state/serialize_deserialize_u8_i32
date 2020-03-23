@@ -122,9 +122,9 @@ pub mod s_d_u8_i32 {
     pub fn deserialize_i32_to_u8(_i32_data: &mut Vec<i32>) -> Vec<u8> {
         let mut vec_of_u8s: Vec<u8> = Vec::new();
         for single_i32_from_vec in _i32_data {
-            println!("Processing: {:?}", single_i32_from_vec);
+            //println!("Processing: {:?}", single_i32_from_vec);
             let mode: u64 = access_value(*single_i32_from_vec as u64, 10, 1);
-            println!("Mode: {:?}", mode);
+            //println!("Mode: {:?}", mode);
             if mode == 1 {
                 vec_of_u8s.push(
                     access_value(*single_i32_from_vec as u64, 9, 3)

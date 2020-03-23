@@ -489,4 +489,49 @@ mod tests {
         // There are two that both match - success
         assert_eq!(matching, 8);
     }
+
+    #[test]
+    fn test_deserialize_i32_to_u8_two() {
+        let mut vec: Vec<i32> = Vec::new();
+        vec.push(0000000001);
+
+        // Expected result
+        let mut a: Vec<u8> = Vec::new();
+        a.push(1);
+        println!("a: {:?}", a);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        println!("v: {:?}", v);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two thatboth match - success
+        assert_eq!(matching, 1);
+    }
+
+    #[test]
+    fn test_deserialize_i32_to_u8_three() {
+        let mut vec: Vec<i32> = Vec::new();
+        vec.push(1009010011);
+        vec.push(1012013014);
+        println!("vec: {:?}", vec);
+
+        // Expected result
+        let mut a: Vec<u8> = Vec::new();
+        a.push(9);
+        a.push(10);
+        a.push(11);
+        a.push(12);
+        a.push(13);
+        a.push(14);
+        println!("a: {:?}", a);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        println!("v: {:?}", v);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 6);
+    }
 }

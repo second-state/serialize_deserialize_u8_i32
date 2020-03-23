@@ -61,11 +61,13 @@ mod s_d_u8_i32 {
                     let one = &mut u8_data.remove(0);
                     //println!("One: {:?}", one);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *one as u64, 3, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *one as u64, 3, 3);
                     // Set the indicator to 3
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
                     // A single u8 stored in a single i32 will have a prefix of 3 - this is a code used in encoding/decoding
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, 0, 10, 1);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, 0, 10, 1);
                 }
                 if items_left == 2 {
                     let one = &mut u8_data.remove(0);
@@ -73,13 +75,16 @@ mod s_d_u8_i32 {
                     let two = &mut u8_data.remove(0);
                     //println!("Two: {:?}", two);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *one as u64, 6, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *one as u64, 6, 3);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *two as u64, 3, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *two as u64, 3, 3);
                     // Set the indicator to 2
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
                     // When two u8s are stored in a single i32 it will have a prefix of 2 - this is a code used in encoding/decoding
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, 2, 10, 1);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, 2, 10, 1);
                 }
                 if items_left >= 3 {
                     let one = &mut u8_data.remove(0);
@@ -89,15 +94,19 @@ mod s_d_u8_i32 {
                     let three = &mut u8_data.remove(0);
                     //println!("Three: {:?}", three);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *one as u64, 9, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *one as u64, 9, 3);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *two as u64, 6, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *two as u64, 6, 3);
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, *three as u64, 3, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *three as u64, 3, 3);
                     // Set the indicator to 2
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
                     // When 3 u8s are stored in a single i32 it will have a prefix of 1 - this is a code used in encoding/decoding
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
                 }
                 // Calculate the remaining items left to process
                 items_left = count_vec_items_left(&u8_data);
@@ -110,6 +119,51 @@ mod s_d_u8_i32 {
             }
         }
         vec_of_i32s
+    }
+
+    pub fn deserialize_i32_to_u8(_i32_data: &mut Vec<i32>) -> Vec<u8> {
+        let mut vec_of_u8s: Vec<u8> = Vec::new();
+        for single_i32_from_vec in _i32_data {
+            let mode: u64 = access_value(*single_i32_from_vec as u64, 10, 1);
+            if mode == 1 {
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 9, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 6, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 3, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+            }
+            if mode == 2 {
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 6, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 3, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+            }
+            // It is impossible for the other cases (which start with 1 or 2) to be less than or equal to 255. This will still work even if the 0000000000 -> 0000000255 gets appended to 0 -> 255
+            if mode == 0 || single_i32_from_vec <= &mut 255 {
+                vec_of_u8s.push(
+                    access_value(*single_i32_from_vec as u64, 3, 3)
+                        .try_into()
+                        .unwrap(),
+                );
+            }
+        }
+        vec_of_u8s
     }
 }
 
@@ -204,28 +258,48 @@ mod tests {
     fn test_insert_3_3_000() {
         let _test_single_value_for_i32_vec_000: u64 = 1000000000;
         let _single_val: u64 = 000;
-        let v = s_d_u8_i32::insert_value_at_position(_test_single_value_for_i32_vec_000, _single_val, 3, 3);
+        let v = s_d_u8_i32::insert_value_at_position(
+            _test_single_value_for_i32_vec_000,
+            _single_val,
+            3,
+            3,
+        );
         assert_eq!(v, 1000000000);
     }
     #[test]
     fn test_insert_3_3_123() {
         let _test_single_value_for_i32_vec_123: u64 = 1123123000;
         let _single_val: u64 = 123;
-        let v = s_d_u8_i32::insert_value_at_position(_test_single_value_for_i32_vec_123, _single_val, 3, 3);
+        let v = s_d_u8_i32::insert_value_at_position(
+            _test_single_value_for_i32_vec_123,
+            _single_val,
+            3,
+            3,
+        );
         assert_eq!(v, 1123123123);
     }
     #[test]
     fn test_insert_3_3_999() {
         let _test_single_value_for_i32_vec_999: u64 = 1999999009;
         let _single_val: u64 = 999;
-        let v = s_d_u8_i32::insert_value_at_position(_test_single_value_for_i32_vec_999, _single_val, 3, 3);
+        let v = s_d_u8_i32::insert_value_at_position(
+            _test_single_value_for_i32_vec_999,
+            _single_val,
+            3,
+            3,
+        );
         assert_eq!(v, 1999999999);
     }
     #[test]
     fn test_insert_9_9_111() {
         let _test_single_value_for_i32_vec_999: u64 = 1999999999;
         let _single_val: u64 = 111;
-        let v = s_d_u8_i32::insert_value_at_position(_test_single_value_for_i32_vec_999, _single_val, 9, 3);
+        let v = s_d_u8_i32::insert_value_at_position(
+            _test_single_value_for_i32_vec_999,
+            _single_val,
+            9,
+            3,
+        );
         assert_eq!(v, 1111999999);
     }
     #[test]
@@ -340,7 +414,6 @@ mod tests {
         assert_eq!(matching, 3);
     }
 
-
     #[test]
     fn test_serialize_u8_to_i32_five() {
         let mut vec: Vec<u8> = Vec::new();
@@ -364,40 +437,53 @@ mod tests {
         // There are two that both match - success
         assert_eq!(matching, 3);
     }
-    //Actually this test can go out in the documentation because we are only dealing with u8 to i32 here
-    // The struct is just one example of how this can be used at the higher level, there will be many more
-    /*
-    #[derive(Serialize, Deserialize, PartialEq, Debug)]
-    struct PhotonImage {
-    raw_pixels: Vec<u8>,
-    width: u32,
-    height: u32,
-    }
-    */
 
-    /*
-    insert_value_at_position(&mut _test_single_value_for_i32_vec, 333, 9, 3);
-    assert_eq!(_test_single_value_for_i32_vec, 1333000000);
-    //println!("{:?}", _test_single_value_for_i32_vec);
-    //
-    flush_value_to_zero(&mut _test_single_value_for_i32_vec, 9, 3);
-    assert_eq!(_test_single_value_for_i32_vec, 1000000000);
-    //println!("{:?}", _test_single_value_for_i32_vec);
-    //
-    insert_value_at_position(&mut _test_single_value_for_i32_vec, 333, 3, 3);
-    assert_eq!(_test_single_value_for_i32_vec, 1000000333);
-    //println!("{:?}", _test_single_value_for_i32_vec);
-    //
-    //
-    insert_value_at_position(&mut _test_single_value_for_i32_vec, 333, 6, 3);
-    assert_eq!(_test_single_value_for_i32_vec, 1000333333);
-    //println!("{:?}", _test_single_value_for_i32_vec);
-    //
-    insert_value_at_position(&mut _test_single_value_for_i32_vec, 8, 9, 3);
-    assert_eq!(_test_single_value_for_i32_vec, 1008333333);
-    //println!("{:?}", _test_single_value_for_i32_vec);
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    #[test]
+    fn test_serialize_u8_to_i32_six() {
+        let mut vec: Vec<u8> = Vec::new();
+        vec.push(1);
+        // Creates
+        // [1]
+
+        // Expected result
+        // [0000000001]
+        let mut a: Vec<i32> = Vec::new();
+        a.push(0000000001);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 1);
     }
-    */
+
+    #[test]
+    fn test_deserialize_i32_to_u8_one() {
+        let mut vec: Vec<i32> = Vec::new();
+        vec.push(1009010011);
+        vec.push(1012013014);
+        vec.push(2000015016);
+        println!("vec: {:?}", vec);
+
+        // Expected result
+        let mut a: Vec<u8> = Vec::new();
+        a.push(9);
+        a.push(10);
+        a.push(11);
+        a.push(12);
+        a.push(13);
+        a.push(14);
+        a.push(15);
+        a.push(16);
+        println!("a: {:?}", a);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        println!("v: {:?}", v);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 8);
+    }
 }

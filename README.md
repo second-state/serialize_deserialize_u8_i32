@@ -33,7 +33,7 @@ Your dependencies might look like this
 serde = { version = "1.0.104", features = ["derive"] }
 ```
 
-# Why serialize as i32 integers
+# Why serialize as i32 integers?
 There are applications like SecondState's [Rust Storage Interface Library](https://github.com/second-state/rust_storage_interface_library), that let you store and load objects as i32. This crate allows you to serialize your data to i32 so that you can take advantge of these storage opportunities.
 
 # Serializing
@@ -55,7 +55,14 @@ This will result in the following data structure
 The also add the following code to your main function to serialize to `i32`
 
 #TODO import library via `use` statement
+
 #TODO demonstrate how to call library serialize
+
 #TODO show data output
+
+# Why deserialize i32 to u8?
+This crate also allows you to load your i32 data from SecondState's [Rust Storage Interface Library](https://github.com/second-state/rust_storage_interface_library) and turn it back into your original high level Rust object.
+
+# Serializing
 #TODO demonstrate how to call library deserialize
 #TODO show data output

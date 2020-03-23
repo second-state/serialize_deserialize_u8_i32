@@ -175,6 +175,16 @@ mod tests {
         let b = s_d_u8_i32::exceeding_max_i32_threshold(number);
         assert_eq!(b, false);
     }
+    #[test]
+    fn test_count_vec_items_left() {
+        let mut vec = Vec::with_capacity(10);
+        for i in 0..10 {
+            vec.push(i);
+        }
+        let items_left: u64 = s_d_u8_i32::count_vec_items_left(&vec);
+        assert_eq!(items_left, 10);
+    }
+
 
     //Actually this test can go out in the documentation because we are only dealing with u8 to i32 here
     // The struct is just one example of how this can be used at the higher level, there will be many more

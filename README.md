@@ -44,6 +44,12 @@ bincode = "^1.2"
 serialize_deserialize_u8_i32 = "^0.1"
 serde = { version = "1.0.104", features = ["derive"] }
 ```
+Then also add the following code to your main function to serialize to `i32`
+```
+use serde::{Deserialize, Serialize};
+use serialize_deserialize_u8_i32::s_d_u8_i32;
+use bincode;
+```
 Add the following code to your main function to serialize to `u8`
 ```
 let mut encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
@@ -51,13 +57,6 @@ let mut encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
 This will result in the following data structure
 ```bash
 [64, 0, 0, 0, 0, 0, 0, 0, 134, 122, 131, 255, 131, 131, 139, 255, 135, 134, 137, 255, 138, 134, 130, 255, 126, 125, 119, 255, 131, 134, 129, 255, 137, 134, 132, 255, 130, 126, 130, 255, 132, 125, 132, 255, 122, 142, 129, 255, 134, 135, 128, 255, 138, 120, 125, 255, 125, 134, 110, 255, 121, 122, 137, 255, 141, 140, 141, 255, 125, 144, 120, 255, 4, 0, 0, 0, 4, 0, 0, 0]
-```
-The also add the following code to your main function to serialize to `i32`
-
-```
-use serde::{Deserialize, Serialize};
-use serialize_deserialize_u8_i32::s_d_u8_i32;
-use bincode;
 ```
 Serialize to i32
 ```

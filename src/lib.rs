@@ -65,7 +65,7 @@ mod s_d_u8_i32 {
                     // Set the indicator to 3
                     single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
                     // A single u8 stored in a single i32 will have a prefix of 3 - this is a code used in encoding/decoding
-                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, 3, 10, 1);
+                    single_value_for_i32_vec = insert_value_at_position(single_value_for_i32_vec, 0, 10, 1);
                 }
                 if items_left == 2 {
                     let one = &mut u8_data.remove(0);
@@ -267,6 +267,53 @@ mod tests {
         let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         assert_eq!(matching, 1);
+    }
+
+    #[test]
+    fn test_serialize_u8_to_i32_two() {
+        let mut vec: Vec<u8> = Vec::new();
+        for i in 1..=6 {
+            vec.push(i);
+        }
+        // Creates
+        // [1, 2, 3, 4, 5, 6]
+
+        // Expected result
+        // [1001002003, 1004005006]
+        let mut a: Vec<i32> = Vec::new();
+        a.push(1001002003);
+        a.push(1004005006);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 2);
+    }
+
+    #[test]
+    fn test_serialize_u8_to_i32_three() {
+        let mut vec: Vec<u8> = Vec::new();
+        for i in 99..=105 {
+            vec.push(i);
+        }
+        // Creates
+        // [99, 100, 101, 102, 103, 104, 105]
+
+        // Expected result
+        // [1099100101, 1102103104, 3000000105]
+        let mut a: Vec<i32> = Vec::new();
+        a.push(1099100101);
+        a.push(1102103104);
+        a.push(0000000105);
+
+        // Actual result (check to see if a and v match)
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
+        println!("{:?} vs {:?}", a, v);
+        // There are two that both match - success
+        assert_eq!(matching, 3);
     }
 
     //Actually this test can go out in the documentation because we are only dealing with u8 to i32 here

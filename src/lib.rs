@@ -124,8 +124,11 @@ pub mod s_d_u8_i32 {
     pub fn deserialize_i32_to_u8(_i32_data: &mut Vec<i32>) -> Vec<u8> {
         let mut vec_of_u8s: Vec<u8> = Vec::new();
         for single_i32_from_vec in _i32_data {
+            println!("Processing: {:?}", single_i32_from_vec);
             let mode: u64 = access_value(*single_i32_from_vec as u64, 10, 1);
+            println!("Mode: {:?}", mode);
             if mode == 1 {
+                println!("Mode 2 action");
                 vec_of_u8s.push(
                     access_value(*single_i32_from_vec as u64, 9, 3)
                         .try_into()
@@ -143,6 +146,7 @@ pub mod s_d_u8_i32 {
                 );
             }
             if mode == 2 {
+                println!("Mode 2 action");
                 vec_of_u8s.push(
                     access_value(*single_i32_from_vec as u64, 6, 3)
                         .try_into()
@@ -156,6 +160,7 @@ pub mod s_d_u8_i32 {
             }
             // It is impossible for the other cases (which start with 1 or 2) to be less than or equal to 255. This will still work even if the 0000000000 -> 0000000255 gets appended to 0 -> 255
             if mode == 0 || single_i32_from_vec <= &mut 255 {
+                println!("Mode 3 action");
                 vec_of_u8s.push(
                     access_value(*single_i32_from_vec as u64, 3, 3)
                         .try_into()

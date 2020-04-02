@@ -181,8 +181,7 @@ pub mod s_d_u8_i32 {
                 }
                 // Calculate the remaining items left to process
                 items_left = count_vec_items_left(&u8_data);
-                if exceeding_max_i32_threshold(items_left.try_into().unwrap()) == false
-                    && exceeding_max_i32_threshold(single_value_for_i32_vec.into()) == false
+                if exceeding_max_i32_threshold(single_value_for_i32_vec.into()) == false
                 {
                     // Push this new i32 to the vec_of_i32s
                     vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());

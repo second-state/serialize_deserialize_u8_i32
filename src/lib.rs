@@ -138,7 +138,6 @@ pub mod s_d_u8_i32 {
                 let two = &mut u8_data.remove(0);
                 //println!("Two: {:?}", two);
                 let three = &mut u8_data.remove(0);
-                /*
                 // Account for the most common pixels to improve efficiency
                 if one.clone() == 255 && two.clone() == 255 && three.clone() == 255 {
                     single_value_for_i32_vec = 1255255255;
@@ -164,8 +163,6 @@ pub mod s_d_u8_i32 {
                     // Push this new i32 to the vec_of_i32s
                     vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
                 }
-                */
-                vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
             }
             // See how many items we have left in the serialised Vec<u8>
             if last_batch_count == 1 {

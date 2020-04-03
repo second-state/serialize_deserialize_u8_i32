@@ -63,7 +63,7 @@
 //!     As u8 again: [64, 0, 0, 0, 0, 0, 0, 0, 134, 122, 131, 255, 131, 131, 139, 255, 135, 134, 137, 255, 138, 134, 130, 255, 126, 125, 119, 255, 131, 134, 129, 255, 137, 134, 132, 255, 130, 126, 130, 255, 132, 125, 132, 255, 122, 142, 129, 255, 134, 135, 128, 255, 138, 120, 125, 255, 125, 134, 110, 255, 121, 122, 137, 255, 141, 140, 141, 255, 125, 144, 120, 255, 4, 0, 0, 0, 4, 0, 0, 0]
 //!     */
 //!
-//!     // Deserialize back to Rust 
+//!     // Deserialize back to Rust
 //!     let decoded: PhotonImage = bincode::deserialize(&encoded_u8_again[..]).unwrap();
 //!     println!("As PhotonImage again: {:?}", decoded);
 //!     /*
@@ -114,7 +114,9 @@ pub mod s_d_u8_i32 {
     }
 
     pub fn access_value(_value: u64, _position: u64, _size: u64) -> u64 {
-        let _mode: u64 = ((_value % (10_u64.pow(_position.try_into().unwrap()))) - (_value % (10_u64.pow((_position - _size).try_into().unwrap())))) / (10_u64.pow((_position - _size).try_into().unwrap()));
+        let _mode: u64 = ((_value % (10_u64.pow(_position.try_into().unwrap())))
+            - (_value % (10_u64.pow((_position - _size).try_into().unwrap()))))
+            / (10_u64.pow((_position - _size).try_into().unwrap()));
         _mode
     }
 
@@ -136,23 +138,31 @@ pub mod s_d_u8_i32 {
                 let two = &mut u8_data.remove(0);
                 //println!("Two: {:?}", two);
                 let three = &mut u8_data.remove(0);
-                //println!("Three: {:?}", three);
-                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
-                single_value_for_i32_vec =
-                    insert_value_at_position(single_value_for_i32_vec, *one as u64, 9, 3);
-                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
-                single_value_for_i32_vec =
-                    insert_value_at_position(single_value_for_i32_vec, *two as u64, 6, 3);
-                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
-                single_value_for_i32_vec =
-                    insert_value_at_position(single_value_for_i32_vec, *three as u64, 3, 3);
-                // Set the indicator to 2
-                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
-                // When 3 u8s are stored in a single i32 it will have a prefix of 1 - this is a code used in encoding/decoding
-                //single_value_for_i32_vec =
-                //    insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
-                // Push this new i32 to the vec_of_i32s
-                vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                // Account for the most common pixels to improve efficiency
+                if one.clone() == 255 && two.clone() == 255 && three.clone() == 255 {
+                    single_value_for_i32_vec = 1255255255;
+                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                } else if one.clone() == 0 && two.clone() == 0 && three.clone() == 0 {
+                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                } else {
+                    //println!("Three: {:?}", three);
+                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *one as u64, 9, 3);
+                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *two as u64, 6, 3);
+                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
+                    single_value_for_i32_vec =
+                        insert_value_at_position(single_value_for_i32_vec, *three as u64, 3, 3);
+                    // Set the indicator to 2
+                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
+                    // When 3 u8s are stored in a single i32 it will have a prefix of 1 - this is a code used in encoding/decoding
+                    //single_value_for_i32_vec =
+                    //    insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
+                    // Push this new i32 to the vec_of_i32s
+                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                }
             }
             // See how many items we have left in the serialised Vec<u8>
             if last_batch_count == 1 {
@@ -192,7 +202,6 @@ pub mod s_d_u8_i32 {
                 // Push this new i32 to the vec_of_i32s
                 vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
             }
-
         }
         vec_of_i32s
     }

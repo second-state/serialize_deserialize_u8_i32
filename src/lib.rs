@@ -103,7 +103,7 @@ pub mod s_d_u8_i32 {
     ) -> u64 {
         // buffer up the single value to equal size i.e. turn 55 (two digits) into 055 (three digits) where the size is 3 etc.
         let mut string_single_value = _single_value.to_string();
-        while string_single_value.len() < _size as usize {
+        while string_single_value.len() < (_size as u64).try_into().unwrap() {
             string_single_value = "0".to_owned() + &string_single_value;
         }
         let new_single_value: u64 = string_single_value.parse::<u64>().unwrap();
@@ -124,27 +124,28 @@ pub mod s_d_u8_i32 {
         let mut vec_of_i32s: Vec<i32> = Vec::new();
         // Test to see if there are too many i32s to store (we need to store the number of i32s in the first i32 so this can not exceed 2147483647)
         if exceeding_max_i32_threshold(count_vec_items_left(&u8_data).into()) == false {
-            let items_left: u64 = count_vec_items_left(&u8_data);
+            let items_left: u64 = count_vec_items_left(&u8_data).try_into().unwrap();
             // Begin processing all of the data into i32s
             let batches_left: u64 = items_left / 3;
             println!("Batches to process: {:?}", batches_left);
             let last_batch_count: u64 = items_left % 3;
-            for i in 1..=batches_left {
-                println!("Processing: {:?}", i);
-                // Create a placeholder i32
-                let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = u8_data.remove(0);
-                //println!("One: {:?}", one);
-                let two = u8_data.remove(0);
-                //println!("Two: {:?}", two);
-                let three = u8_data.remove(0);
-                // Account for the most common pixels to improve efficiency
-                if one.clone() == 255 && two.clone() == 255 && three.clone() == 255 {
-                    single_value_for_i32_vec = 1255255255;
-                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
-                } else if one.clone() == 0 && two.clone() == 0 && three.clone() == 0 {
-                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
-                } else {
+            if batches_left >= 1 {
+                for i in 1..=batches_left {
+                    println!("Processing: {:?}", i);
+                    // Create a placeholder i32
+                    let mut single_value_for_i32_vec: u64 = 1000000000;
+                    // Vec position setup
+                    let mut n: u64 = 0;
+                    if i == 2 {
+                        n = 3;
+                    } else if i >= 3 {
+                        n = i + (i - 1) + (i - 2);
+                    }
+                    let one: u64 = (*u8_data.get(n as usize).unwrap()).into();
+                    //println!("One: {:?}", one);
+                    let two: u64 = (*u8_data.get(n as usize + 1).unwrap()).into();
+                    //println!("Two: {:?}", two);
+                    let three: u64 = (*u8_data.get(n as usize + 2).unwrap()).into();
                     //println!("Three: {:?}", three);
                     //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
                     single_value_for_i32_vec =
@@ -164,11 +165,20 @@ pub mod s_d_u8_i32 {
                     vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
                 }
             }
+            let mut index: usize = 0;
+            if batches_left == 0 {
+                index = 0;
+            } else if batches_left == 1 {
+                index = 3;
+            } else if batches_left >= 2 {
+                index = (batches_left as usize + 3) + (batches_left as usize - 1) + (batches_left as usize - 2);
+            }
             // See how many items we have left in the serialised Vec<u8>
             if last_batch_count == 1 {
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = u8_data.remove(0);
+
+                let one: u64 = (*u8_data.get(index).unwrap()).into();
                 //println!("One: {:?}", one);
                 //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                 single_value_for_i32_vec =
@@ -184,9 +194,9 @@ pub mod s_d_u8_i32 {
             if last_batch_count == 2 {
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = u8_data.remove(0);
+                let one: u64 = (*u8_data.get(index).unwrap()).into();
                 //println!("One: {:?}", one);
-                let two = u8_data.remove(0);
+                let two: u64 = (*u8_data.get(index + 1).unwrap()).into();
                 //println!("Two: {:?}", two);
                 //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
                 single_value_for_i32_vec =
@@ -425,7 +435,7 @@ mod tests {
         a.push(1001002003);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         assert_eq!(matching, 1);
     }
@@ -446,7 +456,7 @@ mod tests {
         a.push(1004005006);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
         // There are two that both match - success
@@ -470,7 +480,7 @@ mod tests {
         a.push(0000000105);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
         // There are two that both match - success
@@ -494,7 +504,7 @@ mod tests {
         a.push(2000105106);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
         // There are two that both match - success
@@ -518,7 +528,7 @@ mod tests {
         a.push(2000015016);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
         // There are two that both match - success
@@ -538,7 +548,7 @@ mod tests {
         a.push(0000000001);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut vec);
+        let v: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(vec);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
         // There are two that both match - success

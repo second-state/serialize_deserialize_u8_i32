@@ -52,7 +52,7 @@ use bincode;
 ```
 Add the following code to your main function to serialize to `u8`
 ```
-let encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
+let encoded_u8: Vec<u8> = bincode::serialize(&photon_image).unwrap();
 ```
 This will result in the following data structure
 ```bash

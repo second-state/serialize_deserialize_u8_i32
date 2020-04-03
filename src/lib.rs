@@ -125,8 +125,10 @@ pub mod s_d_u8_i32 {
             let items_left: u64 = count_vec_items_left(&u8_data);
             // Begin processing all of the data into i32s
             let batches_left: u64 = items_left / 3;
+            println!("Batches to process: {:?}", batches_left);
             let last_batch_count: u64 = items_left % 3;
             for i in 1..=batches_left {
+                println!("Processing: {:?}", i);
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
                 let one = &mut u8_data.remove(0);

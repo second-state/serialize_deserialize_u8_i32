@@ -120,7 +120,7 @@ pub mod s_d_u8_i32 {
         _mode
     }
 
-    pub fn serialize_u8_to_i32(u8_data: &mut Vec<u8>) -> Vec<i32> {
+    pub fn serialize_u8_to_i32(u8_data: Vec<u8>) -> Vec<i32> {
         let mut vec_of_i32s: Vec<i32> = Vec::new();
         // Test to see if there are too many i32s to store (we need to store the number of i32s in the first i32 so this can not exceed 2147483647)
         if exceeding_max_i32_threshold(count_vec_items_left(&u8_data).into()) == false {
@@ -133,11 +133,11 @@ pub mod s_d_u8_i32 {
                 println!("Processing: {:?}", i);
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = &mut u8_data.remove(0);
+                let one = u8_data.remove(0);
                 //println!("One: {:?}", one);
-                let two = &mut u8_data.remove(0);
+                let two = u8_data.remove(0);
                 //println!("Two: {:?}", two);
-                let three = &mut u8_data.remove(0);
+                let three = u8_data.remove(0);
                 // Account for the most common pixels to improve efficiency
                 if one.clone() == 255 && two.clone() == 255 && three.clone() == 255 {
                     single_value_for_i32_vec = 1255255255;
@@ -168,7 +168,7 @@ pub mod s_d_u8_i32 {
             if last_batch_count == 1 {
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = &mut u8_data.remove(0);
+                let one = u8_data.remove(0);
                 //println!("One: {:?}", one);
                 //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                 single_value_for_i32_vec =
@@ -184,9 +184,9 @@ pub mod s_d_u8_i32 {
             if last_batch_count == 2 {
                 // Create a placeholder i32
                 let mut single_value_for_i32_vec: u64 = 1000000000;
-                let one = &mut u8_data.remove(0);
+                let one = u8_data.remove(0);
                 //println!("One: {:?}", one);
-                let two = &mut u8_data.remove(0);
+                let two = u8_data.remove(0);
                 //println!("Two: {:?}", two);
                 //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
                 single_value_for_i32_vec =

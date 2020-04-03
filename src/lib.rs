@@ -156,12 +156,6 @@ pub mod s_d_u8_i32 {
                     //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                     single_value_for_i32_vec =
                         insert_value_at_position(single_value_for_i32_vec, three as u64, 3, 3);
-                    // Set the indicator to 2
-                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
-                    // When 3 u8s are stored in a single i32 it will have a prefix of 1 - this is a code used in encoding/decoding
-                    //single_value_for_i32_vec =
-                    //    insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
-                    // Push this new i32 to the vec_of_i32s
                     vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
                 }
             }
@@ -216,45 +210,45 @@ pub mod s_d_u8_i32 {
         vec_of_i32s
     }
 
-    pub fn deserialize_i32_to_u8(_i32_data: &mut Vec<i32>) -> Vec<u8> {
+    pub fn deserialize_i32_to_u8(_i32_data: Vec<i32>) -> Vec<u8> {
         let mut vec_of_u8s: Vec<u8> = Vec::new();
         for single_i32_from_vec in _i32_data {
             //println!("Processing: {:?}", single_i32_from_vec);
-            let mode: u64 = access_value(*single_i32_from_vec as u64, 10, 1);
+            let mode: u64 = access_value(single_i32_from_vec as u64, 10, 1);
             //println!("Mode: {:?}", mode);
             if mode == 1 {
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 9, 3)
+                    access_value(single_i32_from_vec as u64, 9, 3)
                         .try_into()
                         .unwrap(),
                 );
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 6, 3)
+                    access_value(single_i32_from_vec as u64, 6, 3)
                         .try_into()
                         .unwrap(),
                 );
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 3, 3)
+                    access_value(single_i32_from_vec as u64, 3, 3)
                         .try_into()
                         .unwrap(),
                 );
             }
             if mode == 2 {
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 6, 3)
+                    access_value(single_i32_from_vec as u64, 6, 3)
                         .try_into()
                         .unwrap(),
                 );
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 3, 3)
+                    access_value(single_i32_from_vec as u64, 3, 3)
                         .try_into()
                         .unwrap(),
                 );
             }
             // It is impossible for the other cases (which start with 1 or 2) to be less than or equal to 255. This will still work even if the 0000000000 -> 0000000255 gets appended to 0 -> 255
-            if mode == 0 || single_i32_from_vec <= &mut 255 {
+            if mode == 0 || single_i32_from_vec <= 255 {
                 vec_of_u8s.push(
-                    access_value(*single_i32_from_vec as u64, 3, 3)
+                    access_value(single_i32_from_vec as u64, 3, 3)
                         .try_into()
                         .unwrap(),
                 );
@@ -576,7 +570,7 @@ mod tests {
         println!("a: {:?}", a);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8( vec);
         println!("v: {:?}", v);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
@@ -595,7 +589,7 @@ mod tests {
         println!("a: {:?}", a);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8( vec);
         println!("v: {:?}", v);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
@@ -621,7 +615,7 @@ mod tests {
         println!("a: {:?}", a);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut vec);
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(vec);
         println!("v: {:?}", v);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);

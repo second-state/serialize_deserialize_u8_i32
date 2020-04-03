@@ -137,20 +137,20 @@ pub mod s_d_u8_i32 {
                 //println!("Two: {:?}", two);
                 let three = &mut u8_data.remove(0);
                 //println!("Three: {:?}", three);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *one as u64, 9, 3);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *two as u64, 6, 3);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *three as u64, 3, 3);
                 // Set the indicator to 2
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 10, 1);
                 // When 3 u8s are stored in a single i32 it will have a prefix of 1 - this is a code used in encoding/decoding
-                single_value_for_i32_vec =
-                    insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
+                //single_value_for_i32_vec =
+                //    insert_value_at_position(single_value_for_i32_vec, 1, 10, 1);
                 // Push this new i32 to the vec_of_i32s
                 vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
             }
@@ -160,7 +160,7 @@ pub mod s_d_u8_i32 {
                 let mut single_value_for_i32_vec: u64 = 1000000000;
                 let one = &mut u8_data.remove(0);
                 //println!("One: {:?}", one);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *one as u64, 3, 3);
                 // Set the indicator to 3
@@ -178,10 +178,10 @@ pub mod s_d_u8_i32 {
                 //println!("One: {:?}", one);
                 let two = &mut u8_data.remove(0);
                 //println!("Two: {:?}", two);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *one as u64, 6, 3);
-                single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
+                //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                 single_value_for_i32_vec =
                     insert_value_at_position(single_value_for_i32_vec, *two as u64, 3, 3);
                 // Set the indicator to 2

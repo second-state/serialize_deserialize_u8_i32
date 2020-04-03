@@ -52,7 +52,7 @@ use bincode;
 ```
 Add the following code to your main function to serialize to `u8`
 ```
-let mut encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
+let encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
 ```
 This will result in the following data structure
 ```bash
@@ -61,7 +61,7 @@ This will result in the following data structure
 Serialize to i32
 ```
 // Serialize that to i32
-let mut encoded_i32: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(&mut encoded_u8);
+let encoded_i32: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(encoded_u8);
 println!("As i32: {:?}", encoded_i32)
 ```
 Results in the following
@@ -75,7 +75,7 @@ This crate also allows you to load your i32 data from SecondState's [Rust Storag
 ## Deserializing
 ```
 // Deserialize back to u8
-let encoded_u8_again: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(&mut encoded_i32);
+let encoded_u8_again: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(encoded_i32);
 println!("As u8 again: {:?}", encoded_u8_again);
 ```
 Results in the following 

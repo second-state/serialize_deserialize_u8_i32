@@ -1,6 +1,6 @@
 [package]
 name = "serialize_deserialize_u8_i32"
-version = "0.1.19"
+version = "0.1.20"
 authors = ["tpmccallum <mistermac2008@gmail.com>"]
 edition = "2018"
 readme = "README.md"

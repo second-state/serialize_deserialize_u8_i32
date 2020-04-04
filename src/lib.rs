@@ -73,16 +73,13 @@
 //!
 // Implement multithread processing
 
-
-
 pub mod s_d_u8_i32 {
-
 
     extern crate num_cpus;
     extern crate threadpool;
     use std::convert::TryInto;
-    use threadpool::ThreadPool;
     use std::sync::mpsc::channel;
+    use threadpool::ThreadPool;
 
     pub fn exceeding_max_i32_threshold(_num: u64) -> bool {
         let max: u64 = i32::max_value().try_into().unwrap();
@@ -146,36 +143,39 @@ pub mod s_d_u8_i32 {
                 //let (tx: Sender<i32>, rx: Receiver<i32>) = channel();
                 let (tx, rx) = channel();
                 let tx = tx.clone();
-                pool.execute(move || for i in 1..=batches_left {
-                    //println!("Processing: {:?}", i);
-                    // Create a placeholder i32
-                    let mut single_value_for_i32_vec: u64 = 1000000000;
-                    // Vec position setup
-                    let mut n: u64 = 0;
-                    if i == 2 {
-                        n = 3;
-                    } else if i >= 3 {
-                        n = i + (i - 1) + (i - 2);
+                pool.execute(move || {
+                    for i in 1..=batches_left {
+                        //println!("Processing: {:?}", i);
+                        // Create a placeholder i32
+                        let mut single_value_for_i32_vec: u64 = 1000000000;
+                        // Vec position setup
+                        let mut n: u64 = 0;
+                        if i == 2 {
+                            n = 3;
+                        } else if i >= 3 {
+                            n = i + (i - 1) + (i - 2);
+                        }
+                        let one: u64 = (*u8_data.get(n as usize).unwrap()).into();
+                        //println!("One: {:?}", one);
+                        let two: u64 = (*u8_data.get(n as usize + 1).unwrap()).into();
+                        //println!("Two: {:?}", two);
+                        let three: u64 = (*u8_data.get(n as usize + 2).unwrap()).into();
+                        //println!("Three: {:?}", three);
+                        //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
+                        single_value_for_i32_vec =
+                            insert_value_at_position(single_value_for_i32_vec, one as u64, 9, 3);
+                        //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
+                        single_value_for_i32_vec =
+                            insert_value_at_position(single_value_for_i32_vec, two as u64, 6, 3);
+                        //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
+                        single_value_for_i32_vec =
+                            insert_value_at_position(single_value_for_i32_vec, three as u64, 3, 3);
+                        //vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                        tx.send(single_value_for_i32_vec.try_into().unwrap())
+                            .unwrap();
                     }
-                    let one: u64 = (*u8_data.get(n as usize).unwrap()).into();
-                    //println!("One: {:?}", one);
-                    let two: u64 = (*u8_data.get(n as usize + 1).unwrap()).into();
-                    //println!("Two: {:?}", two);
-                    let three: u64 = (*u8_data.get(n as usize + 2).unwrap()).into();
-                    //println!("Three: {:?}", three);
-                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 9, 3);
-                    single_value_for_i32_vec =
-                        insert_value_at_position(single_value_for_i32_vec, one as u64, 9, 3);
-                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 6, 3);
-                    single_value_for_i32_vec =
-                        insert_value_at_position(single_value_for_i32_vec, two as u64, 6, 3);
-                    //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
-                    single_value_for_i32_vec =
-                        insert_value_at_position(single_value_for_i32_vec, three as u64, 3, 3);
-                    //vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
-                    tx.send(single_value_for_i32_vec.try_into().unwrap()).unwrap();
                 });
-                for _ in 1..=batches_left{
+                for _ in 1..=batches_left {
                     vec_of_i32s.push(rx.recv().unwrap());
                 }
             }
@@ -185,7 +185,9 @@ pub mod s_d_u8_i32 {
             } else if batches_left == 1 {
                 index = 3;
             } else if batches_left >= 2 {
-                index = (batches_left as usize + 3) + (batches_left as usize - 1) + (batches_left as usize - 2);
+                index = (batches_left as usize + 3)
+                    + (batches_left as usize - 1)
+                    + (batches_left as usize - 2);
             }
             // See how many items we have left in the serialised Vec<u8>
             if last_batch_count == 1 {
@@ -590,7 +592,7 @@ mod tests {
         println!("a: {:?}", a);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8( vec);
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(vec);
         println!("v: {:?}", v);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);
@@ -609,7 +611,7 @@ mod tests {
         println!("a: {:?}", a);
 
         // Actual result (check to see if a and v match)
-        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8( vec);
+        let v: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(vec);
         println!("v: {:?}", v);
         let matching = a.iter().zip(&v).filter(|&(a, v)| a == v).count();
         println!("{:?} vs {:?}", a, v);

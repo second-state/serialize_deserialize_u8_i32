@@ -10,5 +10,3 @@ description = "A Rust library that safely converts, back and forward, between u8
 
 
 [dependencies]
-threadpool = "1.7.1"
-num_cpus = "1.12.0"

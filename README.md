@@ -26,6 +26,7 @@ fn main() {
         width: 4,
         height: 4,
     };
+}
 ```
 Your dependencies might look like this
 ```
@@ -52,7 +53,7 @@ use bincode;
 ```
 Add the following code to your main function to serialize to `u8`
 ```
-let encoded: Vec<u8> = bincode::serialize(&photon_image).unwrap();
+let encoded_u8: Vec<u8> = bincode::serialize(&photon_image).unwrap();
 ```
 This will result in the following data structure
 ```bash
@@ -62,7 +63,7 @@ Serialize to i32
 ```
 // Serialize that to i32
 let encoded_i32: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(encoded_u8);
-println!("As i32: {:?}", encoded_i32)
+println!("As i32: {:?}", encoded_i32);
 ```
 Results in the following
 ```

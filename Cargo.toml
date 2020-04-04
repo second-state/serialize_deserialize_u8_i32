@@ -1,6 +1,6 @@
 [package]
 name = "serialize_deserialize_u8_i32"
-version = "0.1.27"
+version = "0.1.28"
 authors = ["tpmccallum <mistermac2008@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -10,6 +10,5 @@ description = "A Rust library that safely converts, back and forward, between u8
 
 
 [dependencies]
-
-
-
+threadpool = "1.7.1"
+num_cpus = "1.12.0"

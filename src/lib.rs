@@ -71,8 +71,18 @@
 //!     */
 //!```
 //!
+// Implement multithread processing
+
+
+
 pub mod s_d_u8_i32 {
+
+
+    extern crate num_cpus;
+    extern crate threadpool;
     use std::convert::TryInto;
+    use threadpool::ThreadPool;
+    use std::sync::mpsc::channel;
 
     pub fn exceeding_max_i32_threshold(_num: u64) -> bool {
         let max: u64 = i32::max_value().try_into().unwrap();
@@ -130,7 +140,13 @@ pub mod s_d_u8_i32 {
             //println!("Batches to process: {:?}", batches_left);
             let last_batch_count: u64 = items_left % 3;
             if batches_left >= 1 {
-                for i in 1..=batches_left {
+                let u8_data = u8_data.clone();
+                // Implement multithread processing
+                let pool = ThreadPool::new(num_cpus::get());
+                //let (tx: Sender<i32>, rx: Receiver<i32>) = channel();
+                let (tx, rx) = channel();
+                let tx = tx.clone();
+                pool.execute(move || for i in 1..=batches_left {
                     //println!("Processing: {:?}", i);
                     // Create a placeholder i32
                     let mut single_value_for_i32_vec: u64 = 1000000000;
@@ -156,7 +172,11 @@ pub mod s_d_u8_i32 {
                     //single_value_for_i32_vec = flush_value_to_zero(single_value_for_i32_vec, 3, 3);
                     single_value_for_i32_vec =
                         insert_value_at_position(single_value_for_i32_vec, three as u64, 3, 3);
-                    vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                    //vec_of_i32s.push(single_value_for_i32_vec.try_into().unwrap());
+                    tx.send(single_value_for_i32_vec.try_into().unwrap()).unwrap();
+                });
+                for _ in 1..=batches_left{
+                    vec_of_i32s.push(rx.recv().unwrap());
                 }
             }
             let mut index: usize = 0;

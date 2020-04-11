@@ -2,20 +2,20 @@
 //! Add serialize_deserialize_u8_i32 dependency in your Cargo.toml file
 //! (please note that we have also added serde and bincode for this usage example)
 //!
-//! ```
+//! ```rust, ignore
 //! [dependencies]
 //! serialize_deserialize_u8_i32 = "^0.1"
 //! serde = { version = "1.0.104", features = ["derive"] }
 //! bincode = "1.2.1"
 //! ```
 //! Add the following code to your application
-//! ```
+//! ```rust, ignore
 //! use serde::{Deserialize, Serialize};
 //! use serialize_deserialize_u8_i32::s_d_u8_i32;
 //! use bincode;
 //!```
 //! Create a high level data type and then serialize and deserialize...
-//! ```
+//! ```rust, ignore
 //! // Create a high level custom struct
 //! #[derive(Serialize, Deserialize, PartialEq, Debug)]
 //! struct PhotonImage {
@@ -25,6 +25,7 @@
 //! }
 //!
 //! // Serialize and deserialize
+//! ```rust, ignore
 //! fn main() {
 //!     // Imlement the struct with data
 //!     let photon_image = PhotonImage {

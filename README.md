@@ -103,7 +103,12 @@ Naturally, this is very simple and easy to use.
 Why would you want to do this? 
 
 So that you can build your intense computation to be more effieicnt. Let me explain.
-If you [store](https://github.com/second-state/specs/blob/master/storage_interface.md#store-a-custom-struct) your data as a high-leve data type, the application that uses it will have to unpack it. The unpacking is an overhead that your execution may not want. In addition, the inpacking requires dependencies like serde and bincode. 
+If you [store](https://github.com/second-state/specs/blob/master/storage_interface.md#store-a-custom-struct) your data as a high-level data type, the image processing application that manipulates the pixels will have to spend time packing/unpacking the high level object. 
+
+The unpacking is an overhead that your execution may not want. 
+
+In addition, the packing/unpacking requires your discrete image processing function to have dependencies like serde and bincode. 
+
 You can still store and load the high level object. Just do that in a different Rust/Wasm executable.
 If you want maximum efficiency and you have data that qualifies i.e. an array of pixels (`[u8]`) you can store these in such a way that the Wasm VM can natively process them (without any serde & bincode overhead)
 Here is an example of the discrete application which would just perform pixel processing, with minimal overheads

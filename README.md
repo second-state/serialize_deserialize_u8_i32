@@ -123,7 +123,7 @@ Takes the i32 storage key for a specific image, converts the image and returns a
 #[no_mangle]
 pub extern fn solarize_the_pixels(_orig_image_location: i32) -> i32 {
     // Load your data from the storage layer (u8 pixels are stored at a compression rate of 3:1)
-    let i32_vec: Vec<i32> = ssvm_storage::load::load_as_i32_vector(storage_key);
+    let i32_vec: Vec<i32> = ssvm_storage::load::load_as_i32_vector(_orig_image_location);
     // Quickly convert it to pixel data
     let mut individual_pixels: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(i32_vec);
     // Process each pixel directly inside the VM

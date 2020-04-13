@@ -1,7 +1,7 @@
 # Serialize & deserialize back and forth between u8 and i32
 A Rust library that safely converts, back and forward, between u8 and i32
 
-# Example usage
+# Example usage (a recipe which also uses serde and bincode)
 Consider you have the following custom image object, in your code (a struct with raw pixels as well as width and height).
 
 ```
@@ -94,7 +94,7 @@ Results in the following
 As PhotonImage again: PhotonImage { raw_pixels: [134, 122, 131, 255, 131, 131, 139, 255, 135, 134, 137, 255, 138, 134, 130, 255, 126, 125, 119, 255, 131, 134, 129, 255, 137, 134, 132, 255, 130, 126, 130, 255, 132, 125, 132, 255, 122, 142, 129, 255, 134, 135, 128, 255, 138, 120, 125, 255, 125, 134, 110, 255, 121, 122, 137, 255, 141, 140, 141, 255, 125, 144, 120, 255], width: 4, height: 4 }
 ```
 
-# Serializing u8 to i32 explicitly (without the need for serde or bincode)
+# Serializing u8 to i32 explicitly (a recipe that does not use serde or bincode)
 If you are interested in using a highly performant data model with a minimum of dependencies, please consider the following.
 As you can see from the examples above, this library can facilitate the storage and retrieval of high-level complex data types in a generic way. 
 Naturally, this is very simple and easy to use.
@@ -114,7 +114,7 @@ serialize_deserialize_u8_i32 = "^0.1"
 rust_storage_interface_library = "^0.1"
 '''
 Rust/Wasm pixel processing function
-```
+```rust, ignore
 use serialize_deserialize_u8_i32::s_d_u8_i32;
 use rust_storage_interface_library::ssvm_storage;
 // Takes the i32 storage key for a specific image, converts the image and returns a new storage key to the newly generated (solarized) image

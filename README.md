@@ -93,3 +93,48 @@ Results in the following
 ```
 As PhotonImage again: PhotonImage { raw_pixels: [134, 122, 131, 255, 131, 131, 139, 255, 135, 134, 137, 255, 138, 134, 130, 255, 126, 125, 119, 255, 131, 134, 129, 255, 137, 134, 132, 255, 130, 126, 130, 255, 132, 125, 132, 255, 122, 142, 129, 255, 134, 135, 128, 255, 138, 120, 125, 255, 125, 134, 110, 255, 121, 122, 137, 255, 141, 140, 141, 255, 125, 144, 120, 255], width: 4, height: 4 }
 ```
+
+# Serializing u8 to i32 explicitly (without the need for serde or bincode)
+If you are interested in using a highly performant data model with a minimum of dependencies, please consider the following.
+As you can see from the examples above, this library can facilitate the storage and retrieval of high-level complex data types in a generic way. 
+Naturally, this is very simple and easy to use.
+**You can, however**, go a step further and explicitly encode your data to i32 yourself, ahead of time. Essentially what this means is, instead of creating a generic representation of your data, you can crack your PhotonImage object open (ahead of time) to serialize and store each internal part separately. 
+
+Why would you want to do this? 
+
+So that you can build your intense computation to be more effieicnt. Let me explain.
+If you [store](https://github.com/second-state/specs/blob/master/storage_interface.md#store-a-custom-struct) your data as a high-leve data type, the application that uses it will have to unpack it. The unpacking is an overhead that your execution may not want. In addition, the inpacking requires dependencies like serde and bincode. 
+You can still store and load the high level object. Just do that in a different Rust/Wasm executable.
+If you want maximum efficiency and you have data that qualifies i.e. an array of pixels (`[u8]`) you can store these in such a way that the Wasm VM can natively process them (without any serde & bincode overhead)
+Here is an example of the discrete application which would just perform pixel processing, with minimal overheads
+Cargo.toml
+```rust, ignore
+[dependencies]
+serialize_deserialize_u8_i32 = "^0.1"
+rust_storage_interface_library = "^0.1"
+'''
+Rust/Wasm pixel processing function
+```
+use serialize_deserialize_u8_i32::s_d_u8_i32;
+use rust_storage_interface_library::ssvm_storage;
+// Takes the i32 storage key for a specific image, converts the image and returns a new storage key to the newly generated (solarized) image
+#[no_mangle]
+pub extern fn solarize_the_pixels(_orig_image_location: i32) -> i32 {
+    // Load your data from the storage layer (u8 pixels are stored at a compression rate of 3:1)
+    let i32_vec: Vec<i32> = ssvm_storage::load::load_as_i32_vector(storage_key);
+    // Quickly convert it to pixel data
+    let mut individual_pixels: Vec<u8> = s_d_u8_i32::deserialize_i32_to_u8(i32_vec);
+    // Process each pixel directly inside the VM
+    for pixel in individual_pixels.iter_mut() {
+        if 200 as i32 - *pixel as i32 > 0 {
+            *pixel = 200 - *pixel;
+        }
+    }
+    // Pack the u8 pixels back into i32s (compressing 3:1)
+    let new_encoded_image: Vec<i32> = s_d_u8_i32::serialize_u8_to_i32(individual_pixels);
+    // Save the solarized image to the storage location and retrieve its storage key
+    let new_image_storage_key: i32 = ssvm_storage::store::store_as_i32_vector(new_encoded_image);
+    // Pass the storage key of the solarized image back to the calling code
+    new_image_storage_key
+}
+```

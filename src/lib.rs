@@ -93,9 +93,9 @@
 //! [dependencies]
 //! serialize_deserialize_u8_i32 = "^0.1"
 //! rust_storage_interface_library = "^0.1"
-//! '''
-//! Rust/Wasm pixel processing function
 //! ```
+//! Rust/Wasm pixel processing function
+//! ```rust, ignore
 //! use serialize_deserialize_u8_i32::s_d_u8_i32;
 //! use rust_storage_interface_library::ssvm_storage;
 //! // Takes the i32 storage key for a specific image, converts the image and returns a new storage key to the newly generated (solarized) image

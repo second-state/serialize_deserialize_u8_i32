@@ -119,7 +119,7 @@ use serialize_deserialize_u8_i32::s_d_u8_i32;
 use rust_storage_interface_library::ssvm_storage;
 ```
 Takes the i32 storage key for a specific image, converts the image and returns a new storage key to the newly generated (solarized) image
-```
+```rust, ignore
 #[no_mangle]
 pub extern fn solarize_the_pixels(_orig_image_location: i32) -> i32 {
     // Load your data from the storage layer (u8 pixels are stored at a compression rate of 3:1)
